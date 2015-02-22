@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SomeBasicDapperApp.Tests.NH.Core.Entities
+namespace SomeBasicDapperApp.Tests.NH.Entities
 {
     public class Order 
     {

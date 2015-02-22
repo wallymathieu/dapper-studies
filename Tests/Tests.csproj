@@ -75,9 +75,9 @@
     <Compile Include="CustomerDataTests.cs" />
     <Compile Include="NH\HibernateSession.cs" />
     <Compile Include="Migrations.cs" />
-    <Compile Include="NH\Customer.cs" />
-    <Compile Include="NH\Order.cs" />
-    <Compile Include="NH\Product.cs" />
+    <Compile Include="NH\Entities\Customer.cs" />
+    <Compile Include="NH\Entities\Order.cs" />
+    <Compile Include="NH\Entities\Product.cs" />
     <Compile Include="NH\SaveTestData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="XmlImport.cs" />

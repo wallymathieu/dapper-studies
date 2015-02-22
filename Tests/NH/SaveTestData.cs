@@ -1,11 +1,7 @@
 ﻿using SomeBasicDapperApp.Core;
-using SomeBasicDapperApp.Tests.NH.Core.Entities;
+using SomeBasicDapperApp.Tests.NH.Entities;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace SomeBasicDapperApp.Tests.NH

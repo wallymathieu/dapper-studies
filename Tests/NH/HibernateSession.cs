@@ -6,7 +6,7 @@ using FluentNHibernate.Conventions;
 using NHibernate;
 using NHibernate.Tool.hbm2ddl;
 using SomeBasicDapperApp.Core;
-using SomeBasicDapperApp.Tests.NH.Core.Entities;
+using SomeBasicDapperApp.Tests.NH.Entities;
 using System;
 
 namespace SomeBasicDapperApp.Tests.NH
@@ -45,7 +45,7 @@ namespace SomeBasicDapperApp.Tests.NH
 			return conf.Mappings(m => m.AutoMappings.Add(new AutoPersistenceModel()
 				.AddEntityAssembly(typeof(Customer).Assembly)
 				.Conventions.Add(new TableNameConvention())
-				.Where(t => t.Namespace.EndsWith("Core.Entities")))
+				.Where(t => t.Namespace.EndsWith("Entities")))
 				);
 		}
 		public ISessionFactory CreateTestSessionFactory(string file, bool newDb = false)
