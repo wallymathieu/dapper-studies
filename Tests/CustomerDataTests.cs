@@ -52,13 +52,12 @@ namespace SomeBasicDapperApp.Tests
         private static Db.Factory CreateFactory()
         {
             if (File.Exists("CustomerDataTests.db"))
-            {
                 File.Delete("CustomerDataTests.db");
-            }
 
+            var factory = new Db().CreateTestSessionFactory("CustomerDataTests.db");
             new Migrator("CustomerDataTests.db").Migrate();
-            new SaveTestData().Save();
-            return new Db(new ConsoleMapPath()).CreateTestSessionFactory("CustomerDataTests.db");
+            new SaveTestData(factory).Save();
+            return factory;
         }
     }
 }
