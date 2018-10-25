@@ -1,5 +1,4 @@
-﻿using SomeBasicDapperApp.Core;
-using SomeBasicDapperApp.Tests.NH.Entities;
+﻿using SomeBasicDapperApp.Tests.NH.Entities;
 using System;
 using System.IO;
 using System.Xml.Linq;
@@ -12,7 +11,7 @@ namespace SomeBasicDapperApp.Tests.NH
 		{
 			var doc = XDocument.Load(Path.Combine("TestData", "TestData.xml"));
 			var import = new XmlImport(doc, "http://tempuri.org/Database.xsd");
-			using (var hibernateSessionFactory = new HibernateSession(new ConsoleMapPath()).CreateTestSessionFactory("CustomerDataTests.db"))
+			using (var hibernateSessionFactory = new HibernateSession().CreateTestSessionFactory("CustomerDataTests.db"))
 			{
 				using (var session = hibernateSessionFactory.OpenSession())
 				using (var tnx = session.BeginTransaction())

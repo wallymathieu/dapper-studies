@@ -1,15 +1,10 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using FluentMigrator.Runner;
+﻿using FluentMigrator.Runner;
 using FluentMigrator.Runner.Processors;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace SomeBasicDapperApp.Tests
 {
-
-
 	public class Migrator
 	{
 		private static void RunWithServices(string processorId, string connectionString)

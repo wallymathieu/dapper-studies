@@ -38,11 +38,5 @@ namespace SomeBasicDapperApp.DbMigrations
                 .AsInt32()
                 .NotNullable();
         }
-		public static ICreateTableColumnOptionOrWithColumnSyntax WithTimeStamps(this ICreateTableWithColumnSyntax tableWithColumnSyntax)
-		{
-			return tableWithColumnSyntax
-				.WithColumn("CreatedAt").AsDateTime().NotNullable()
-				.WithColumn("ModifiedAt").AsDateTime().NotNullable();
-		}
 	}
 }

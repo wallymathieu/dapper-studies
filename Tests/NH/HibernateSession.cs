@@ -5,7 +5,6 @@ using FluentNHibernate.Cfg.Db;
 using FluentNHibernate.Conventions;
 using NHibernate;
 using NHibernate.Tool.hbm2ddl;
-using SomeBasicDapperApp.Core;
 using SomeBasicDapperApp.Tests.NH.Entities;
 using System;
 
@@ -13,17 +12,6 @@ namespace SomeBasicDapperApp.Tests.NH
 {
 	public class HibernateSession
 	{
-		private class CustomConf : DefaultAutomappingConfiguration
-		{
-			public override bool IsId(Member member)
-			{
-				return member.Name.Equals("Id", StringComparison.InvariantCultureIgnoreCase);
-			}
-			public override Type GetParentSideForManyToMany(Type left, Type right)
-			{
-				return base.GetParentSideForManyToMany(left, right);
-			}
-		}
 		public class TableNameConvention : IClassConvention
 		{
 			public void Apply(FluentNHibernate.Conventions.Instances.IClassInstance instance)
@@ -33,19 +21,14 @@ namespace SomeBasicDapperApp.Tests.NH
 				instance.Table(typeName + "s");
 			}
 		}
-		private readonly IMapPath _mapPath;
-
-		public HibernateSession(IMapPath mapPath)
-		{
-			_mapPath = mapPath;
-		}
 
 		private FluentConfiguration ConfigureMaps(FluentConfiguration conf)
 		{
-			return conf.Mappings(m => m.AutoMappings.Add(new AutoPersistenceModel()
+			return conf.Mappings(m => m.AutoMappings.Add(
+				new AutoPersistenceModel()
 				.AddEntityAssembly(typeof(Customer).Assembly)
 				.Conventions.Add(new TableNameConvention())
-				.Where(t => t.Namespace.EndsWith("Entities")))
+				.Where(t => t.Namespace?.EndsWith("SomeBasicDapperApp.Tests.NH.Entities")??false))
 				);
 		}
 		public ISessionFactory CreateTestSessionFactory(string file, bool newDb = false)

@@ -7,64 +7,58 @@ using Xunit;
 
 namespace SomeBasicDapperApp.Tests
 {
-	public class CustomerDataTests:IDisposable
-	{
-		private static Db.Factory _sessionFactory;
-		private Db.Session _session;
+    public class CustomerDataTests
+    {
+        private static Lazy<Db.Factory> _sessionFactory = new Lazy<Db.Factory>(CreateFactory);
 
-		[Fact]
-		public void CanGetCustomerById()
-		{
-			Assert.NotNull(_session.GetCustomer(1));
-		}
+        [Fact]
+        public void CanGetCustomerById()
+        {
+            using (var session = _sessionFactory.Value.OpenSession())
+                Assert.NotNull(session.GetCustomer(1));
+        }
 
-		[Fact]
-		public void CanGetProductById()
-		{
-			Assert.NotNull(_session.GetProduct(1));
-		}
+        [Fact]
+        public void CanGetProductById()
+        {
+            using (var session = _sessionFactory.Value.OpenSession())
+                Assert.NotNull(session.GetProduct(1));
+        }
 
-		[Fact]
-		public void CanGetCustomerByFirstname()
-		{
-			var customers = _session.GetCustomersWithFirstname("Steve");
-			Assert.Equal(3, customers.Count());
-		}
+        [Fact]
+        public void CanGetCustomerByFirstname()
+        {
+            using (var session = _sessionFactory.Value.OpenSession())
+            {
+                var customers = session.GetCustomersWithFirstname("Steve");
+                Assert.Equal(3, customers.Count());
+            }
+        }
 
-		[Fact]
-		public void OrderContainsProduct()
-		{
-			Assert.True(_session.GetOrderProducts(1).Any(p => p.Id == 1));
-		}
-		[Fact]
-		public void OrderHasACustomer()
-		{
-			Assert.NotNull(_session.GetCustomerForOrder(1));
-		}
+        [Fact]
+        public void OrderContainsProduct()
+        {
+            using (var session = _sessionFactory.Value.OpenSession())
+                Assert.True(session.GetOrderProducts(1).Any(p => p.Id == 1));
+        }
 
-		public CustomerDataTests()
-		{
-			_session = _sessionFactory.OpenSession();
-		}
+        [Fact]
+        public void OrderHasACustomer()
+        {
+            using (var session = _sessionFactory.Value.OpenSession())
+                Assert.NotNull(session.GetCustomerForOrder(1));
+        }
 
+        private static Db.Factory CreateFactory()
+        {
+            if (File.Exists("CustomerDataTests.db"))
+            {
+                File.Delete("CustomerDataTests.db");
+            }
 
-		public void Dispose()
-		{
-			if (_session != null)
-			{
-				_session.Close();
-				_session.Dispose();
-			}
-		}
-
-		static CustomerDataTests()
-		{
-			if (File.Exists("CustomerDataTests.db")) { File.Delete("CustomerDataTests.db"); }
-
-			new Migrator("CustomerDataTests.db").Migrate();
-			new SaveTestData().Save();
-			_sessionFactory = new Db(new ConsoleMapPath()).CreateTestSessionFactory("CustomerDataTests.db");
-		}
-
-	}
+            new Migrator("CustomerDataTests.db").Migrate();
+            new SaveTestData().Save();
+            return new Db(new ConsoleMapPath()).CreateTestSessionFactory("CustomerDataTests.db");
+        }
+    }
 }
