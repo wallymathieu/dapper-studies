@@ -23,8 +23,8 @@
     <PackageReference Include="xunit" Version="2.4.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Core\Core.csproj" />
-    <ProjectReference Include="..\DbMigrations\DbMigrations.csproj" />
+    <ProjectReference Include="..\..\src\Core\Core.csproj" />
+    <ProjectReference Include="..\..\migrations\DbMigrations\DbMigrations.csproj" />
   </ItemGroup>
 
 </Project>
