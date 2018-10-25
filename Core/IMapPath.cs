@@ -14,12 +14,4 @@ namespace SomeBasicDapperApp.Core
             return path;
         }
     }
-
-    public class WebMapPath : IMapPath
-    {
-        public string MapPath(string path)
-        {
-            return HttpContext.Current.Server.MapPath(path);
-        }
-    }
 }

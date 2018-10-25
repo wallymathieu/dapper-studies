@@ -1,59 +1,54 @@
-﻿using System.IO;
-using System.Xml.Linq;
-using NUnit.Framework;
+﻿using System;
+using System.IO;
 using SomeBasicDapperApp.Core;
 using System.Linq;
-using System;
-using SomeBasicDapperApp.Core.Entities;
 using SomeBasicDapperApp.Tests.NH;
+using Xunit;
 
 namespace SomeBasicDapperApp.Tests
 {
-	[TestFixture]
-	public class CustomerDataTests
+	public class CustomerDataTests:IDisposable
 	{
-		private Db.Factory _sessionFactory;
+		private static Db.Factory _sessionFactory;
 		private Db.Session _session;
 
-		[Test]
+		[Fact]
 		public void CanGetCustomerById()
 		{
-			Assert.IsNotNull(_session.GetCustomer(1));
+			Assert.NotNull(_session.GetCustomer(1));
 		}
 
-		[Test]
+		[Fact]
 		public void CanGetProductById()
 		{
-			Assert.IsNotNull(_session.GetProduct(1));
+			Assert.NotNull(_session.GetProduct(1));
 		}
 
-		[Test]
+		[Fact]
 		public void CanGetCustomerByFirstname()
 		{
 			var customers = _session.GetCustomersWithFirstname("Steve");
-			Assert.AreEqual(3, customers.Count());
+			Assert.Equal(3, customers.Count());
 		}
 
-		[Test]
+		[Fact]
 		public void OrderContainsProduct()
 		{
 			Assert.True(_session.GetOrderProducts(1).Any(p => p.Id == 1));
 		}
-		[Test]
+		[Fact]
 		public void OrderHasACustomer()
 		{
-			Assert.IsNotNull(_session.GetCustomerForOrder(1));
+			Assert.NotNull(_session.GetCustomerForOrder(1));
 		}
 
-		[SetUp]
-		public void Setup()
+		public CustomerDataTests()
 		{
 			_session = _sessionFactory.OpenSession();
 		}
 
 
-		[TearDown]
-		public void TearDown()
+		public void Dispose()
 		{
 			if (_session != null)
 			{
@@ -62,8 +57,7 @@ namespace SomeBasicDapperApp.Tests
 			}
 		}
 
-		[TestFixtureSetUp]
-		public void TestFixtureSetup()
+		static CustomerDataTests()
 		{
 			if (File.Exists("CustomerDataTests.db")) { File.Delete("CustomerDataTests.db"); }
 
@@ -72,10 +66,5 @@ namespace SomeBasicDapperApp.Tests
 			_sessionFactory = new Db(new ConsoleMapPath()).CreateTestSessionFactory("CustomerDataTests.db");
 		}
 
-		[TestFixtureTearDown]
-		public void TestFixtureTearDown()
-		{
-			_sessionFactory.Dispose();
-		}
 	}
 }
