@@ -4,6 +4,7 @@ using SomeBasicDapperApp.Core;
 using System.Linq;
 using SomeBasicDapperApp.Tests.NH;
 using Xunit;
+using System.Threading.Tasks;
 
 namespace SomeBasicDapperApp.Tests
 {
@@ -12,41 +13,41 @@ namespace SomeBasicDapperApp.Tests
         private static Lazy<Db.Factory> _sessionFactory = new Lazy<Db.Factory>(CreateFactory);
 
         [Fact]
-        public void CanGetCustomerById()
+        public async Task CanGetCustomerByIdAsync()
         {
             using (var session = _sessionFactory.Value.OpenSession())
-                Assert.NotNull(session.GetCustomer(1));
+                Assert.NotNull(await session.GetCustomer(1));
         }
 
         [Fact]
-        public void CanGetProductById()
+        public async Task CanGetProductByIdAsync()
         {
             using (var session = _sessionFactory.Value.OpenSession())
-                Assert.NotNull(session.GetProduct(1));
+                Assert.NotNull(await session.GetProduct(1));
         }
 
         [Fact]
-        public void CanGetCustomerByFirstname()
+        public async Task CanGetCustomerByFirstnameAsync()
         {
             using (var session = _sessionFactory.Value.OpenSession())
             {
-                var customers = session.GetCustomersWithFirstname("Steve");
+                var customers = await session.GetCustomersWithFirstname("Steve");
                 Assert.Equal(3, customers.Count());
             }
         }
 
         [Fact]
-        public void OrderContainsProduct()
+        public async Task OrderContainsProductAsync()
         {
             using (var session = _sessionFactory.Value.OpenSession())
-                Assert.True(session.GetOrderProducts(1).Any(p => p.Id == 1));
+                Assert.True((await session.GetOrderProducts(1)).Any(p => p.Id == 1));
         }
 
         [Fact]
-        public void OrderHasACustomer()
+        public async Task OrderHasACustomerAsync()
         {
             using (var session = _sessionFactory.Value.OpenSession())
-                Assert.NotNull(session.GetCustomerForOrder(1));
+                Assert.NotNull(await session.GetCustomerForOrder(1));
         }
 
         private static Db.Factory CreateFactory()
@@ -56,7 +57,7 @@ namespace SomeBasicDapperApp.Tests
 
             var factory = new Db().CreateTestSessionFactory("CustomerDataTests.db");
             new Migrator("CustomerDataTests.db").Migrate();
-            new SaveTestData(factory).Save();
+            new SaveTestData(factory).Save().GetAwaiter().GetResult();
             return factory;
         }
     }
