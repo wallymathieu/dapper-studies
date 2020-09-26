@@ -7,7 +7,6 @@
   <ItemGroup>
     <Compile Include="Domain.fs" />
     <Compile Include="Commands.fs" />
-    <PackageReference Include="Dapper" Version="1.50.5" />
     <PackageReference Include="Dapper.FSharp" Version="1.12.2" />
     <PackageReference Include="FSharpPlus" Version="1.1.3" />
     <PackageReference Include="Ply" Version="0.3.1" />
