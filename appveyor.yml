@@ -7,3 +7,9 @@ test_script:
 branches:
   only:
     - master
+services:
+  - postgresql
+environment:
+  PGUSER: postgres
+  PGPASSWORD: Password12!
+  PGDB: postgres

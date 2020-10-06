@@ -10,9 +10,15 @@ open GetCommands
 open FSharp.Control.Tasks 
 open Npgsql
 open FsMigrations
+module Env=
+    let var (key:string)=Environment.GetEnvironmentVariable(key) |> Option.ofObj
 
 type CustomerDataTests()=
-    let connString= "Username=postgres;Database=dapperstudies;Password=b31592ca295b45c495fb61e1a88334f5;Host=localhost;Port=5432"
+    let user = Env.var "PGUSER" |> Option.defaultValue "postgres"
+    let password = Env.var "PGPASSWORD" |> Option.defaultValue "b31592ca295b45c495fb61e1a88334f5"
+    let db = Env.var "PGDB" |> Option.defaultValue "dapperstudies"
+
+    let connString= sprintf "Username=%s;Database=%s;Password=%s;Host=localhost;Port=5432" user db password
     let repository ()=
         let postgres = new NpgsqlConnection(connString)
         postgres.Open()
