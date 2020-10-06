@@ -9,17 +9,23 @@ open SomeBasicFileStoreApp
 open GetCommands
 open FSharp.Control.Tasks 
 open Npgsql
+open FsMigrations
 
 type CustomerDataTests()=
-    let connString= ""
-    let postgres = new NpgsqlConnection(connString)
-    let repository = Repository(postgres) :> IRepository
+    let connString= "Username=postgres;Database=dapperstudies;Password=b31592ca295b45c495fb61e1a88334f5;Host=localhost;Port=5432"
+    let repository ()=
+        let postgres = new NpgsqlConnection(connString)
+        postgres.Open()
+        Repository(postgres) :> IRepository
 
     do
+        let migrator = MigrationRunner.create connString "PostgreSQL"
         
-        postgres.Open()
+        migrator.MigrateUp()
+
         //_container.Boot();
         let commands = getCommands()
+        let repository = repository()
         let run = Command.run repository
         let t = task{
             for c in commands do
@@ -29,16 +35,19 @@ type CustomerDataTests()=
 
     [<Fact>]
     member this.CanGetCustomerById()=task{
+        let repository = repository()
         let! c = repository.GetCustomer(1)
         Assert.NotNull(c)}
 
     [<Fact>]
     member this.CanGetProductById()=task{
+        let repository = repository()
         let! p= repository.GetProduct(1)
         Assert.NotNull(p)}
 
     [<Fact>]
     member this.OrderContainsProduct()=task{
+        let repository = repository()
         let! order = repository.GetOrder(1)
         Assert.True(order.Value.Products |> List.tryFind( fun p -> p.Id = 1) |> Option.isSome) }
 

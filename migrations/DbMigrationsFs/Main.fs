@@ -11,7 +11,7 @@ type CmdArgs =
 [<EntryPoint>]
 let main argv =
     let defaultArgs = 
-      { connection= "Server=localhost;Database=ef-core-studies-fsharp;MultipleActiveResultSets=true;User Id=sa;Password=EF_TEST_PASSWORD"
+      { connection= "Server=localhost;Database=dapperstudies;User Id=postgres;Password=b31592ca295b45c495fb61e1a88334f5"
         processor = "postgres"
         operation = "migrate"
       }
