@@ -1,9 +1,17 @@
+image: Visual Studio 2019
 configuration: Release
 build_script:
   - dotnet restore
   - dotnet build dapper-studies.sln
 test_script:
   - dotnet test tests\Tests
+  - dotnet test tests\TestsFs
 branches:
   only:
     - master
+services:
+  - postgresql
+environment:
+  PGUSER: postgres
+  PGPASSWORD: Password12!
+  PGDB: postgres

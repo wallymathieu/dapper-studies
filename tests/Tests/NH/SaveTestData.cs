@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 using SomeBasicDapperApp.Core;
 
@@ -48,7 +49,7 @@ namespace SomeBasicDapperApp.Tests.NH
             _db = db;
         }
 
-        public void Save()
+        public async Task Save()
         {
             var doc = XDocument.Load(Path.Combine("TestData", "TestData.xml"));
             var import = new XmlImport(doc, "http://tempuri.org/Database.xsd");
@@ -59,39 +60,38 @@ namespace SomeBasicDapperApp.Tests.NH
                     var orderCustomer = new Dictionary<int, int>();
                     import.ParseIntProperty("Order", "Customer",
                         (orderId, customerId) => { orderCustomer.Add(orderId, customerId); });
-                    import.Parse(new[] {typeof(Customer), typeof(Order), typeof(Product)},
-                        (type, obj) =>
-                        {
-                            switch (obj)
-                            {
-                                case Customer c:
-                                    session.CreateCustomer(c.Id, c.Firstname, c.Lastname, c.Version);
-                                    break;
-                                case Order o:
-                                    session.CreateOrder(o.Id, o.OrderDate,
-                                        orderCustomer.TryGetValue(o.Id, out var v) ? v : (int?) null,
-                                        o.Version);
-                                    break;
-                                case Product p:
-                                    session.CreateProduct(p.Id, p.Name, p.Cost, p.Version);
-                                    break;
-                                default: throw new Exception(obj.GetType().FullName);
-                            }
-                        },
+                    foreach (var (type,obj) in import.Parse(new[] {typeof(Customer), typeof(Order), typeof(Product)},
                         onIgnore: (type, property) =>
                         {
                             Console.WriteLine("Not mapped: " + type.Name + " " + property.Name);
-                        });
+                        }))
+                    {
+                        switch (obj)
+                        {
+                            case Customer c:
+                                await session.CreateCustomer(c.Id, c.Firstname, c.Lastname, c.Version);
+                                break;
+                            case Order o:
+                                await session.CreateOrder(o.Id, o.OrderDate,
+                                    orderCustomer.TryGetValue(o.Id, out var v) ? v : (int?) null,
+                                    o.Version);
+                                break;
+                            case Product p:
+                                await session.CreateProduct(p.Id, p.Name, p.Cost, p.Version);
+                                break;
+                            default: throw new Exception(obj.GetType().FullName);
+                        }
+                    }
                     tnx.Commit();
                 }
 
                 using (var session = _db.OpenSession())
                 using (var tnx = session.BeginTransaction())
                 {
-                    import.ParseConnections("OrderProduct", "Product", "Order",
-                        (productId, orderId) => { session.AddProductToOrder(productId, orderId); });
-
-
+                    foreach (var (productId, orderId) in import.ParseConnections("OrderProduct", "Product", "Order"))
+                    {
+                        await session.AddProductToOrder(productId, orderId);
+                    }
                     tnx.Commit();
                 }
             }

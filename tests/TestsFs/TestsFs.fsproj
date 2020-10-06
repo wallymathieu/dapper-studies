@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+    <GenerateProgramFile>false</GenerateProgramFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="GetCommands.fs" />
+    <Compile Include="CustomerDataTests.fs" />
+    <None Include="..\Tests\TestData\TestData.xml">
+      <Link>TestData.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FSharp.Data" Version="3.0.0" />
+    <PackageReference Include="Npgsql" Version="4.1.4" />
+    <PackageReference Include="Ply" Version="0.3.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
+    <PackageReference Include="xunit" Version="2.4.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
+    <PackageReference Include="coverlet.collector" Version="1.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\CoreFs\CoreFs.fsproj" />
+    <ProjectReference Include="..\..\migrations\DbMigrationsFs\DbMigrationsFs.fsproj" />
+  </ItemGroup>
+
+</Project>

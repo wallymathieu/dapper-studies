@@ -39,10 +39,9 @@ namespace SomeBasicDapperApp.Tests
 			return @object;
 		}
 
-		public IEnumerable<Tuple<Type, Object>> Parse(IEnumerable<Type> types, Action<Type, Object> onParsedEntity = null, Action<Type, PropertyInfo> onIgnore = null)
+		public IEnumerable<(Type, Object)> Parse(IEnumerable<Type> types, Action<Type, PropertyInfo> onIgnore = null)
 		{
 			var db = xDocument.Root;
-			var list = new List<Tuple<Type, Object>>();
 
 			foreach (var type in types)
 			{
@@ -51,13 +50,11 @@ namespace SomeBasicDapperApp.Tests
 				foreach (var element in elements)
 				{
 					var obj = Parse(element, type, onIgnore);
-					if (null != onParsedEntity) onParsedEntity(type, obj);
-					list.Add(Tuple.Create(type, obj));
+					yield return (type, obj);
 				}
 			}
-			return list;
 		}
-		public IEnumerable<Tuple<int, int>> ParseConnections(string name, string first, string second, Action<int, int> onParsedEntity = null)
+		public IEnumerable<(int, int)> ParseConnections(string name, string first, string second)
 		{
 			var ns = _ns;
 			var db = xDocument.Root;
@@ -69,10 +66,8 @@ namespace SomeBasicDapperApp.Tests
 				XElement s = element.Element(ns + second);
 				var firstValue = int.Parse(f.Value);
 				var secondValue = int.Parse(s.Value);
-				if (null != onParsedEntity) onParsedEntity(firstValue, secondValue);
-				list.Add(Tuple.Create(firstValue, secondValue));
+				yield return (firstValue, secondValue);
 			}
-			return list;
 		}
 
 		public IEnumerable<Tuple<int, int>> ParseIntProperty(string name, string elementName, Action<int, int> onParsedEntity = null)
