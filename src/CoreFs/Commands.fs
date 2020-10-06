@@ -20,8 +20,8 @@ module Command=
                 if notExisting then
                     let! _ = repository.Insert({
                                      Id=id
-                                     FirstName=firstName
-                                     LastName=lastName
+                                     Firstname=firstName
+                                     Lastname=lastName
                                      Version=version
                                     })
                     ()
@@ -35,8 +35,7 @@ module Command=
                                     Id=id
                                     OrderDate=orderDate
                                     Version=version
-                                    Customer=customer 
-                                    Products=List.empty
+                                    CustomerId=customer.Id
                                    })
                     ()
                 | _,_ -> () }
@@ -46,7 +45,7 @@ module Command=
                     let! _ = repository.Insert({
                                      Id=id
                                      Version=version
-                                     Cost=cost
+                                     Cost=double cost
                                      Name=name
                                     })
                     ()
@@ -56,7 +55,8 @@ module Command=
                 let! product = repository.GetProduct(productId)
                 match order,product with
                 | Some order, Some product ->
-                    repository.Insert({order with Products= product :: order.Products}) |> ignore
+                    let! _= repository.Insert({ ProductId= product.Id; OrderId=order.Id })
+                    ()
                 | _, _ -> ()
                 }
             | Empty -> Task.FromResult ()

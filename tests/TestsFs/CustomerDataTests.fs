@@ -22,6 +22,7 @@ type CustomerDataTests()=
         let migrator = MigrationRunner.create connString "PostgreSQL"
         
         migrator.MigrateUp()
+        Dapper.FSharp.OptionTypes.register()
 
         //_container.Boot();
         let commands = getCommands()
@@ -31,7 +32,7 @@ type CustomerDataTests()=
             for c in commands do
                 do! run c.Command
         }
-        t.GetAwaiter().GetResult()
+        t.ConfigureAwait(true).GetAwaiter().GetResult()
 
     [<Fact>]
     member this.CanGetCustomerById()=task{
@@ -48,8 +49,9 @@ type CustomerDataTests()=
     [<Fact>]
     member this.OrderContainsProduct()=task{
         let repository = repository()
-        let! order = repository.GetOrder(1)
-        Assert.True(order.Value.Products |> List.tryFind( fun p -> p.Id = 1) |> Option.isSome) }
+        let! products = repository.GetOrderProducts(1)
+        
+        Assert.True(products |> Seq.tryFind( fun p -> p.Id = 1) |> Option.isSome) }
 
     //[<Test>]
     //member this.OrderHasACustomer()=
