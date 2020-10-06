@@ -4,6 +4,7 @@ build_script:
   - dotnet build dapper-studies.sln
 test_script:
   - dotnet test tests\Tests
+  - dotnet test tests\TestsFs
 branches:
   only:
     - master
