@@ -55,4 +55,5 @@ build/
 packages/
 .vs
 .idea
-
+# VS Code
+.ionide/
