@@ -5,12 +5,13 @@ using System.Linq;
 using SomeBasicDapperApp.Tests.NH;
 using Xunit;
 using System.Threading.Tasks;
+using SomeBasicDapperApp.Tests.Sqlite;
 
 namespace SomeBasicDapperApp.Tests
 {
     public class CustomerDataTests
     {
-        private static Lazy<Db.Factory> _sessionFactory = new Lazy<Db.Factory>(CreateFactory);
+        private static Lazy<DbFactory> _sessionFactory = new Lazy<DbFactory>(CreateFactory);
 
         [Fact]
         public async Task CanGetCustomerByIdAsync()
@@ -50,12 +51,12 @@ namespace SomeBasicDapperApp.Tests
                 Assert.NotNull(await session.GetCustomerForOrder(1));
         }
 
-        private static Db.Factory CreateFactory()
+        private static DbFactory CreateFactory()
         {
             if (File.Exists("CustomerDataTests.db"))
                 File.Delete("CustomerDataTests.db");
 
-            var factory = new Db().CreateTestSessionFactory("CustomerDataTests.db");
+            var factory = new DbFactory("CustomerDataTests.db");
             new Migrator("CustomerDataTests.db").Migrate();
             new SaveTestData(factory).Save().GetAwaiter().GetResult();
             return factory;

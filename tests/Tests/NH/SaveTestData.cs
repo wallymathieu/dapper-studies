@@ -4,12 +4,13 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using SomeBasicDapperApp.Core;
+using SomeBasicDapperApp.Tests.Sqlite;
 
 namespace SomeBasicDapperApp.Tests.NH
 {
     class SaveTestData
     {
-        private readonly Db.Factory _db;
+        private readonly DbFactory _db;
 
         private class Customer
         {
@@ -44,7 +45,7 @@ namespace SomeBasicDapperApp.Tests.NH
             public virtual int Version { get; set; }
         }
 
-        public SaveTestData(Db.Factory db)
+        public SaveTestData(DbFactory db)
         {
             _db = db;
         }

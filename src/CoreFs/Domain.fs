@@ -8,7 +8,7 @@ type Customer = {Id:int; Firstname:string ; Lastname:string; Version:int}
 type Product = {Id:int; Cost:double; Name: string; Version: int}
 
 [<CLIMutable>]
-type Order = {Id:int; CustomerId:int; OrderDate:DateTime; Version: int}
+type Order = {Id:int; CustomerId:int; OrderDate:DateTimeOffset; Version: int}
 
 [<CLIMutable>]
 type OrdersToProduct = {OrderId: int; ProductId: int}
