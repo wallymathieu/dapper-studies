@@ -57,3 +57,5 @@ packages/
 .idea
 # VS Code
 .ionide/
+
+.fake
